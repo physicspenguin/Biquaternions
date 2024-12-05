@@ -1,16 +1,23 @@
 #			The Biquaternion toolbox
 #
-# This worksheet generates the package "Biquaternions".
+# This worksheet generates the package "Biquaternions" with basic functionality
+# for working with quaternionic algebras (Hamiltonian quaternions, split
+# quaternions, dual quaternions, ...) and certain polynomials over these
+# algebras. Focus is on usability, not on efficiency.
+
+# This package is inspired by original code from Josef Schicho, Johannes Kepler
+# University Linz, RISC Research Institute for Symbolic Computation.
 #
 # Authors:
 # Daniel Scharler
 # University of Innsbruck
 # Institute for Basic Sciences in Engineering
 # Unit Geometry and Surveying
-# 
-# Josef Schicho
-# Johannes Kepler University Linz
-# RISC Research Institute for Symbolic Computation
+#
+# Hans-Peter Schröcker
+# University of Innsbruck
+# Institute for Basic Sciences in Engineering
+# Unit Geometry and Surveying
 #
 # Johannes Siegele
 # Austrian Academy of Sciences
@@ -20,7 +27,6 @@
 # University of Innsbruck
 # Institute for Basic Sciences in Engineering
 # Unit Geometry and Surveying
-#
 
 
 Biquaternions := module()
@@ -32,7 +38,7 @@ option package:
 global i, j, k, e:
 
 # Some procedures are just used internally and shall not be exposed to regular users.
-local EvalRL, pQR:
+local EvalRL, pQR, Ugly, Pretty:
 
 # Default to dual quaternions.
 # (Dual) split-quaternions are obtained by DefineAlgebra(-1, 1, 0).
@@ -73,7 +79,7 @@ end proc:
 
 Mul := proc(ap, bp, prettify::boolean := true)
 description "Product of two (bi-)quaternions. Depends on global variables _BQa, _BQb, _BQc.":
-  # product of biquaternions
+  # Product of biquaternions.
   global _BQa, _BQb, _BQc, e:
   local raw, T, a, b:
   a := Ugly(ap):
@@ -366,7 +372,7 @@ FiberProject := proc(Q)
 mrpf := proc(Q)
    local p, d, g, l:
 
-   description "returns the maximal real polynomial factor of the dual quaternion polynomial Q":
+   description "Returns the maximal real polynomial factor of the dual quaternion polynomial Q.":
 
    p := Ugly(Primal(Q)):
    d := Ugly(Dual(Q)):
@@ -383,7 +389,7 @@ end proc:
 gcdCPD := proc(Q)
    local p, d, c, g, l, pcjd, cjpd :
 
-   description "returns the real gcd of c, P &* Cj(D) and Cj(P) &* D for the dual quaternion polynomial cP+eD":
+   description "Returns the real gcd of c, P &* Cj(D) and Cj(P) &* D for the dual quaternion polynomial cP+eD.":
 
    c := mrpf(Primal(Q)):
    p := simplify(Primal(Q)/c):
@@ -406,7 +412,7 @@ end proc:
 LowDegRep := proc(Q)
     local p, d, c, c1, g, deg, ctemp, z, alpha1, alpha2, t, zlist, lam, h, l, dtemp, Lagr, degtemp:
 
-    description "returns a representation of the motion Q with the lowest degree possible, but no longer fulfilling Study's condition":
+    description "Returns a representation of the motion Q with the lowest degree possible, but no longer fulfilling Study's condition.":
 
       c := gcdCPD(Q);
       c1 := mrpf(Primal(Q)):
