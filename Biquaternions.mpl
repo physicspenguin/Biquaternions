@@ -325,7 +325,7 @@ description "Action of biquaternion q on line l, represented as biquaternion, li
 end proc:
 
 ActOnPlane := proc(q, u)
-    description "Action of biquaternion q on plane u, represented as biquaternion, list, or vector."
+    description "Action of biquaternion q on plane u, represented as biquaternion, list, or vector.":
     if type(u, list) then
         return BQ2L(ActOnPlane(q, L2BQ(u))):
     elif type(u, Vector) then
