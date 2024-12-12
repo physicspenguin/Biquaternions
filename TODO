@@ -1,7 +1,0 @@
-- [X] Make Ugly and Pretty internal.
-- [X] Add license.
-- [X] Add install file.
-- [X] Add credits: Based on initial code by Josef Schicho; with contributions by Daniel Scharler, Johannes Siegele, Daren A. Thimm, and Hans-Peter Schröcker.
-
-Later:
-- [ ] Implement act on plane: u0+u1*x+u2*y+u3*z=0 --> u := u1*i+u2*j+u3*k+e*u0; action of q: u -> Ej(q)&*u&*Cj(q)
