@@ -371,8 +371,8 @@ description "Left evaluation of (bi-)quaternion polynomial P in indeterminate t 
 end proc:
 
 FiberProject := proc(Q)
-    local p,d,Qproj:
-    description "returns the projection of Q onto Studys quadric":
+description "returns the projection of Q onto Studys quadric":
+local p,d,Qproj:
       p := coeff(Q,e,0);
       d := coeff(Q,e,1);
       Qproj := Mul(simplify(2*BQNorm(p)-e*(Mul(p,Cj(d))-Mul(d,Cj(p)))),p,true);
@@ -380,9 +380,8 @@ FiberProject := proc(Q)
   end proc:
 
 mrpf := proc(Q)
-   local p, d, g, l:
-
-   description "Returns the maximal real polynomial factor of the dual quaternion polynomial Q.":
+local p, d, g, l:
+description "Returns the maximal real polynomial factor of the dual quaternion polynomial Q.":
 
    p := Ugly(Primal(Q)):
    d := Ugly(Dual(Q)):
@@ -420,61 +419,60 @@ gcdCPD := proc(Q)
 end proc:
 
 LowDegRep := proc(Q)
-    local p, d, c, c1, g, deg, ctemp, z, alpha1, alpha2, t, zlist, lam, h, l, dtemp, Lagr, degtemp:
+description "Returns a representation of the motion Q with the lowest degree possible, but no longer fulfilling Study's condition.":
+local p, d, c, c1, g, deg, ctemp, z, alpha1, alpha2, t, zlist, lam, h, l, dtemp, Lagr, degtemp:
 
-    description "Returns a representation of the motion Q with the lowest degree possible, but no longer fulfilling Study's condition.":
+    c := gcdCPD(Q);
+    c1 := mrpf(Primal(Q)):
+    p := simplify(Primal(Q)/c1);
+    d := Dual(Q);
+    t := op(indets(c));
+    ctemp := convert(PolynomialTools[Split](c,t),radical);
+    z := []:
+    alpha1 := 0:
+    alpha2 := 0:
+    zlist := []:
+    lam := 0:
 
-      c := gcdCPD(Q);
-      c1 := mrpf(Primal(Q)):
-      p := simplify(Primal(Q)/c1);
-      d := Dual(Q);
-      t := op(indets(c));
-      ctemp := convert(PolynomialTools[Split](c,t),radical);
-      z := []:
-      alpha1 := 0:
-      alpha2 := 0:
-      zlist := []:
-      lam := 0:
-
-      for h from 1 to nops(ctemp) do
+    for h from 1 to nops(ctemp) do
         z := [op(z),PolynomialTools[SquareFreePart](op(h,ctemp),t)-t]:
         degtemp := degree(op(h,ctemp)):
         zlist := [op(zlist),seq(z[-1],g=1..degtemp)]:
-      end do:
+    end do:
 
-      zlist := sort(zlist);
+    zlist := sort(zlist);
 
-      ctemp := 1:
-      dtemp := d:
+    ctemp := 1:
+    dtemp := d:
 
-      for l from 1 to nops(zlist) do
+    for l from 1 to nops(zlist) do
         if ((zlist[l]-conjugate(zlist[l]))/I) < 0 then
-          alpha1 := LinearAlgebra[DotProduct](Ugly(eval(dtemp,t=zlist[l])),Ugly(eval(p,t=zlist[l])))/LinearAlgebra[DotProduct](Ugly(eval(p,t=zlist[l])),Ugly(eval(p,t=zlist[l])));
-          alpha2 := LinearAlgebra[DotProduct](Ugly(eval(dtemp,t=conjugate(zlist[l]))),Ugly(eval(p,t=conjugate(zlist[l]))))/LinearAlgebra[DotProduct](Ugly(eval(p,t=conjugate(zlist[l]))),Ugly(eval(p,t=conjugate(zlist[l]))));
-          if alpha1 = alpha2 then
-             dtemp := simplify((dtemp - alpha1 * p)/((t-zlist[l])*(t-conjugate(zlist[l]))));
-             lam := simplify(lam + alpha1*ctemp);
-          else
-             Lagr := CurveFitting[PolynomialInterpolation]([[zlist[l],alpha1],[conjugate(zlist[l]),alpha2]],t,form=Lagrange);
-             dtemp := simplify((dtemp - Lagr * p)/((t-zlist[l])*(t-conjugate(zlist[l]))));
-             lam := simplify(lam + Lagr * ctemp);
-          end if;
-          ctemp := simplify(ctemp *((t-zlist[l])*(t-conjugate(zlist[l]))));
+            alpha1 := LinearAlgebra[DotProduct](Ugly(eval(dtemp,t=zlist[l])),Ugly(eval(p,t=zlist[l])))/LinearAlgebra[DotProduct](Ugly(eval(p,t=zlist[l])),Ugly(eval(p,t=zlist[l])));
+            alpha2 := LinearAlgebra[DotProduct](Ugly(eval(dtemp,t=conjugate(zlist[l]))),Ugly(eval(p,t=conjugate(zlist[l]))))/LinearAlgebra[DotProduct](Ugly(eval(p,t=conjugate(zlist[l]))),Ugly(eval(p,t=conjugate(zlist[l]))));
+            if alpha1 = alpha2 then
+                dtemp := simplify((dtemp - alpha1 * p)/((t-zlist[l])*(t-conjugate(zlist[l]))));
+                lam := simplify(lam + alpha1*ctemp);
+            else
+                Lagr := CurveFitting[PolynomialInterpolation]([[zlist[l],alpha1],[conjugate(zlist[l]),alpha2]],t,form=Lagrange);
+                dtemp := simplify((dtemp - Lagr * p)/((t-zlist[l])*(t-conjugate(zlist[l]))));
+                lam := simplify(lam + Lagr * ctemp);
+            end if;
+            ctemp := simplify(ctemp *((t-zlist[l])*(t-conjugate(zlist[l]))));
         end if:
     end do:
 
-   return simplify((Q-e*lam*p)/c):
-  end proc:
+    return simplify((Q-e*lam*p)/c):
+end proc:
 
 IndetBQ := proc(x, L := [0, 1, 2, 3, 4, 5, 6, 7])
 description "Returns the biquaternion x0 + x1*i + x2*j + x3*k + e*(x4 + x5*i + x6 * j + x7 * k). Onle indices mentioned in the list L are used.":
 local l, r, b:
-  r := 0:
-  b := [1, i, j, k, e, e*i, e*j, e*k]:
-  for l in L do
-    r := r + x||l * b[l+1]:
-  end do:
-  return r:
+    r := 0:
+    b := [1, i, j, k, e, e*i, e*j, e*k]:
+    for l in L do
+        r := r + x||l * b[l+1]:
+    end do:
+    return r:
 end proc:
 
 
