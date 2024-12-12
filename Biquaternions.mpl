@@ -31,7 +31,7 @@
 
 Biquaternions := module()
 
-export init, DefineAlgebra, Mul, Cj, Ej, Quadrance, BQNorm, ScalarInverse, Inv, lQR, rQR, rQuo, rRem, lQuo, lRem, RandR, RandQ, RandBQ, RandL, Primal, Dual, ScalarPart, VectorPart, BQ2L, L2BQ, V2BQ, BQ2V, BQ2Plucker, Plucker2BQ, Act, ActOnLine, `&*`, EvalR, EvalL, IP, CP, FiberProject, gcdCPD, LowDegRep, mrpf, IndetBQ:
+export init, DefineAlgebra, Mul, Cj, Ej, Quadrance, BQNorm, ScalarInverse, Inv, lQR, rQR, rQuo, rRem, lQuo, lRem, RandR, RandQ, RandBQ, RandL, Primal, Dual, ScalarPart, VectorPart, BQ2L, L2BQ, V2BQ, BQ2V, BQ2Plucker, Plucker2BQ, Act, ActOnLine, ActOnPlane, `&*`, EvalR, EvalL, IP, CP, FiberProject, gcdCPD, LowDegRep, mrpf, IndetBQ:
 
 option package:
 
@@ -322,6 +322,16 @@ description "Action of biquaternion q on line l, represented as biquaternion, li
     return BQ2V(ActOnLine(q, V2BQ(l)), [2,3,4,-6,-7,-8]):
   end if:
   return q &* l &* Cj(q):
+end proc:
+
+ActOnPlane := proc(q, u)
+    description "Action of biquaternion q on plane u, represented as biquaternion, list, or vector."
+    if type(u, list) then
+        return BQ2L(ActOnPlane(q, L2BQ(u))):
+    elif type(u, Vector) then
+        return BQ2V(ActOnPlane(q, L2BQ(u))):
+    end if:
+    return Ej(q) &* u &* Cj(q):
 end proc:
 
 EvalRL := proc(P, t, h, right := true)
